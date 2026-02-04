@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZETA 정보 아카이브</title>
+    <style>
+        :root { --main: #a855f7; --bg: #09090b; --card: #18181b; }
+        body { background: var(--bg); color: #fafafa; font-family: sans-serif; padding: 20px; margin: 0; }
+        .container { max-width: 500px; margin: auto; }
+        h1 { text-align: center; color: var(--main); font-size: 20px; margin: 20px 0; }
+        
+        .search-box { width: 100%; padding: 12px; background: #18181b; border: 1px solid #3f3f46; border-radius: 10px; color: #fff; margin-bottom: 15px; box-sizing: border-box; }
+        .tabs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 10px; scrollbar-width: none; }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { white-space: nowrap; background: #27272a; border: none; color: #a1a1aa; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; }
+        .tab-btn.active { background: var(--main); color: #fff; }
+
+        .post-card { background: var(--card); padding: 16px; border-radius: 12px; border: 1px solid #27272a; text-decoration: none; color: inherit; display: block; margin-bottom: 10px; transition: 0.2s; }
+        .post-card:hover { border-color: var(--main); transform: translateY(-2px); }
+        .post-tag { font-size: 11px; color: var(--main); font-weight: bold; margin-bottom: 4px; display: block; }
+        .post-title { font-size: 14px; font-weight: bold; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🏛️ ZETA 정보 아카이브</h1>
+
+    <input type="text" id="searchInput" class="search-box" placeholder="제목 검색..." oninput="renderPosts()">
+    
+    <div class="tabs">
+        <button class="tab-btn active" onclick="setFilter('전체')">전체</button>
+        <button class="tab-btn" onclick="setFilter('제타')">제타</button>
+        <button class="tab-btn" onclick="setFilter('로어북')">로어북</button>
+        <button class="tab-btn" onclick="setFilter('Pix')">Pix</button>
+        <button class="tab-btn" onclick="setFilter('NAI')">NAI</button>
+        <button class="tab-btn" onclick="setFilter('사이트')">사이트</button>
+        <button class="tab-btn" onclick="setFilter('기타')">기타</button>
+    </div>
+
+    <div id="postList"></div>
+</div>
+
+<script>
+    // [데이터 박제] 여기에 적힌 내용은 배포 시 모든 사람이 보게 됩니다.
+    const posts = [
+        { title: "로어북에 대해서", link: "https://m.dcinside.com/board/zetam/738976", cat: "로어북" },
+        { title: "로어북 공유: 수업시간표", link: "https://m.dcinside.com/board/zetam/739383", cat: "로어북" },
+        { title: "메인상태창 > 전투상태창 연계 (적 매혹 기능)", link: "https://m.dcinside.com/board/zetam/739632", cat: "제타" },
+        { title: "로어북 필수 프롬프트 요약", link: "https://m.dcinside.com/board/zetam/739638", cat: "로어북" },
+        { title: "교포가 알려주는 로어북 사용 팁", link: "https://m.dcinside.com/board/zetam/739807", cat: "로어북" },
+        { title: "로어북 작은 팁", link: "https://m.dcinside.com/board/zetam/739808", cat: "로어북" }
+    ];
+
+    let currentFilter = "전체";
+
+    function renderPosts() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const listDiv = document.getElementById('postList');
+        listDiv.innerHTML = "";
+
+        const filtered = posts.filter(p => {
+            const matchCat = (currentFilter === "전체") || (p.cat === currentFilter);
+            const matchSearch = p.title.toLowerCase().includes(query);
+            return matchCat && matchSearch;
+        });
+
+        filtered.forEach(p => {
+            listDiv.innerHTML += `
+                <a href="${p.link}" target="_blank" class="post-card">
+                    <span class="post-tag">#${p.cat}</span>
+                    <span class="post-title">${p.title}</span>
+                </a>`;
+        });
+    }
+
+    function setFilter(cat) {
+        currentFilter = cat;
+        const btns = document.querySelectorAll('.tab-btn');
+        btns.forEach(b => b.classList.toggle('active', b.innerText === cat));
+        renderPosts();
+    }
+
+    renderPosts();
+</script>
+
+</body>
+</html>
